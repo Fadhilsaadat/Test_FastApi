@@ -33,8 +33,6 @@ async def lifespan(app: FastAPI):
     # Tambahkan kode yang perlu dijalankan saat aplikasi berhenti
     pass
 
-app = FastAPI(lifespan=lifespan)
-
 @app.get("/", response_class=HTMLResponse)
 def read_item(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
@@ -47,7 +45,7 @@ def read_description(request: Request):
 @app.post("/detection/img_object_detection_to_img", response_class=HTMLResponse)
 async def process_image_and_display(request: Request, file: UploadFile = File(...)):
     # Process the image and get the result
-    result_image_bytes = img_object_detection_to_img(file.file.read())
+    result_image_bytes = img_object_detection_to_img(await file.read())
 
     # Save the result image to a file (you may want to save it temporarily or handle it differently)
     result_image_path = "static/result_image.jpg"
